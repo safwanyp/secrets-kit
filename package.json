@@ -26,6 +26,7 @@
     "lint": "oxlint --config ./oxlint.json .",
     "typecheck": "tsc --project ./tsconfig.json",
     "test": "vitest run --config ./vitest.config.js",
+    "test:coverage": "vitest run --config ./vitest.config.js --coverage",
     "test:watch": "vitest --config ./vitest.config.js",
     "test:live:aws": "vitest run --config ./vitest.live.config.js ./test/live/aws.live.test.js",
     "test:live:gcp": "vitest run --config ./vitest.live.config.js ./test/live/gcp.live.test.js",

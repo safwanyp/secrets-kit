@@ -1,5 +1,46 @@
 export type { CachePolicy, SecretDefinition } from "./generated-config.js"
 
+import type { SecretDefinition } from "./generated-config.js"
+
+declare const providerDescriptorBrand: unique symbol
+
+export interface ProviderDescriptor {
+  readonly [providerDescriptorBrand]: true
+}
+
+export interface SourceDefinition {
+  readonly id: string
+  readonly provider: ProviderDescriptor
+}
+
+export type BackgroundErrorHandler = (error: SecretsKitError) => void
+
+export interface SecretsKitConfig<
+  TSecrets extends Readonly<Record<string, SecretDefinition>> = Readonly<
+    Record<string, SecretDefinition>
+  >,
+> {
+  readonly sources: readonly SourceDefinition[]
+  readonly secrets: TSecrets
+  readonly cache?: import("./generated-config.js").CachePolicy
+  readonly onBackgroundError?: BackgroundErrorHandler
+}
+
+export interface SecretReadOptions {
+  readonly signal?: AbortSignal
+}
+
+export interface SecretsKit<TName extends string = string> {
+  get(name: TName, options?: SecretReadOptions): Promise<string>
+  getBytes(name: TName, options?: SecretReadOptions): Promise<Uint8Array>
+  invalidate(name?: TName): void
+  close(): Promise<void>
+}
+
+export function createSecretsKit<const TSecrets extends Readonly<Record<string, SecretDefinition>>>(
+  config: SecretsKitConfig<TSecrets>,
+): SecretsKit<Extract<keyof TSecrets, string>>
+
 export type SecretsKitErrorCode =
   | "SECRETS_KIT_ERROR"
   | "SECRETS_KIT_CONFIGURATION"

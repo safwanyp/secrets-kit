@@ -16,6 +16,7 @@
     "generated/**/*.d.ts",
     "scripts/**/*.js",
     "src/**/*.js",
+    "test/**/*.d.ts",
     "test/**/*.js",
     "types/**/*.d.ts",
     "*.config.js"

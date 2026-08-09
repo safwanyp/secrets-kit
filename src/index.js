@@ -1,3 +1,5 @@
+export { createSecretsKit } from "./client.js"
+
 export {
   SecretAccessDeniedError,
   SecretAuthenticationError,
