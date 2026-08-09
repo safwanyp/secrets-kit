@@ -2,6 +2,8 @@
 
 Release Please owns every version, changelog, tag, and GitHub release. npm publication uses Trusted Publishing with GitHub Actions OIDC; no long-lived npm publish token belongs in this repository or its GitHub environment.
 
+The release workflow is manual and must be run from `main`. A push or merge to `main` never starts it.
+
 ## One-time repository setup
 
 1. Create a protected GitHub environment named `npm` and require manual approval.
@@ -58,10 +60,11 @@ For Infisical Cloud, `SECRETS_KIT_INFISICAL_SITE_URL` may be left empty to use t
 ## Release flow
 
 1. Merge conventional commits into `main` only after review and green CI.
-2. Release Please opens or updates a release PR containing the proposed version and changelog.
-3. Review and merge the release PR. Release Please creates the version tag and GitHub release.
-4. Approve the protected `npm` job.
-5. The job checks out the release tag, installs from the frozen lockfile, runs the complete local gate, authenticates to AWS and GCP through workload identity, verifies all three live fixture values, and publishes through npm OIDC.
-6. Confirm the npm version and provenance record before considering the release complete.
+2. From the GitHub Actions page, manually run the Release workflow on `main`. Release Please opens or updates a release PR containing the proposed version and changelog. This run does not publish anything.
+3. Review and merge the release PR. The merge does not run the release workflow.
+4. Manually run the Release workflow on `main` again. Release Please creates the version tag and GitHub release, then starts the protected `npm` job.
+5. Approve the protected `npm` job.
+6. The job checks out the release tag, installs from the frozen lockfile, runs the complete local gate, authenticates to AWS and GCP through workload identity, verifies all three live fixture values, and publishes through npm OIDC.
+7. Confirm the npm version and provenance record before considering the release complete.
 
 Do not manually edit versions or changelogs, create release tags, publish from a workstation, or add an npm publish token.

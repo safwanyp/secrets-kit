@@ -543,6 +543,7 @@ npm publication always uses Trusted Publishing with GitHub Actions OIDC:
 - No long-lived npm publish token
 - Automatic npm provenance
 - Protected GitHub environment with manual approval
+- Release workflow triggered manually from `main`; pushes never create or publish a release
 - Publication only after required quality and live-provider checks
 - Traditional token publishing restricted after OIDC is verified
 
