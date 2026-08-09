@@ -14,6 +14,7 @@ export default defineConfig({
       },
     },
     include: ["test/**/*.test.js"],
+    exclude: ["test/live/**"],
     mockReset: true,
     restoreMocks: true,
   },
