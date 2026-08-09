@@ -39,6 +39,34 @@ export interface GcpOptions {
 
 export function gcp(options?: GcpOptions): ProviderDescriptor
 
+export type InfisicalClient = Pick<import("@infisical/sdk").InfisicalSDK, "secrets">
+
+export interface InfisicalUniversalAuth {
+  readonly clientId: string
+  readonly clientSecret: string
+}
+
+interface InfisicalBaseOptions {
+  readonly environment: string
+  readonly projectId: string
+  readonly secretPath?: string
+  readonly siteUrl?: string
+}
+
+export type InfisicalOptions = InfisicalBaseOptions &
+  (
+    | {
+        readonly auth: InfisicalUniversalAuth
+        readonly client?: never
+      }
+    | {
+        readonly auth?: never
+        readonly client: InfisicalClient
+      }
+  )
+
+export function infisical(options: InfisicalOptions): ProviderDescriptor
+
 export interface SourceDefinition {
   readonly id: string
   readonly provider: ProviderDescriptor
