@@ -2,7 +2,15 @@
   "name": "secrets-kit",
   "version": "0.0.0",
   "description": "A small, read-only Node.js SDK for retrieving declared secrets from AWS, Google Cloud, and Infisical.",
+  "keywords": [
+    "aws",
+    "gcp",
+    "infisical",
+    "secret-manager",
+    "secrets"
+  ],
   "license": "MIT",
+  "author": "Safwan Parkar",
   "files": [
     "generated",
     "src",
@@ -17,8 +25,13 @@
     ".": {
       "types": "./types/public.d.ts",
       "import": "./src/index.js",
-      "require": "./src/index.js"
+      "require": "./src/index.js",
+      "default": "./src/index.js"
     }
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   },
   "scripts": {
     "format": "oxfmt --config ./oxfmt.json .",
@@ -36,8 +49,9 @@
     "generate": "pnpm run generate:validators && pnpm run generate:types",
     "generate:check": "node ./scripts/check-generated.js",
     "test:package": "node ./scripts/test-package.js",
+    "publint": "publint --strict",
     "commitlint": "commitlint --config ./commitlint.config.js",
-    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run generate:check && pnpm run test:package",
+    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:coverage && pnpm run generate:check && pnpm run test:package && pnpm run publint",
     "prepare": "husky"
   },
   "dependencies": {
