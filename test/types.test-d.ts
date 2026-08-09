@@ -1,6 +1,16 @@
-import { createSecretsKit, type ProviderDescriptor, type SecretsKit } from "secrets-kit"
+import {
+  aws,
+  createSecretsKit,
+  type AwsOptions,
+  type ProviderDescriptor,
+  type SecretsKit,
+} from "secrets-kit"
 
 declare const provider: ProviderDescriptor
+declare const awsClient: import("@aws-sdk/client-secrets-manager").SecretsManager
+
+const awsOptions: AwsOptions = { client: awsClient }
+void aws(awsOptions)
 
 const secrets = createSecretsKit({
   secrets: {

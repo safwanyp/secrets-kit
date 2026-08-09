@@ -8,6 +8,24 @@ export interface ProviderDescriptor {
   readonly [providerDescriptorBrand]: true
 }
 
+export interface AwsSecretsManagerClient {
+  getSecretValue(
+    input: import("@aws-sdk/client-secrets-manager").GetSecretValueCommandInput,
+  ): Promise<import("@aws-sdk/client-secrets-manager").GetSecretValueCommandOutput>
+}
+
+export type AwsOptions =
+  | {
+      readonly client?: never
+      readonly region?: string
+    }
+  | {
+      readonly client: AwsSecretsManagerClient
+      readonly region?: never
+    }
+
+export function aws(options?: AwsOptions): ProviderDescriptor
+
 export interface SourceDefinition {
   readonly id: string
   readonly provider: ProviderDescriptor
