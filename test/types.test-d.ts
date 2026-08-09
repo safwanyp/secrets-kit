@@ -1,16 +1,21 @@
 import {
   aws,
   createSecretsKit,
+  gcp,
   type AwsOptions,
+  type GcpOptions,
   type ProviderDescriptor,
   type SecretsKit,
 } from "secrets-kit"
 
 declare const provider: ProviderDescriptor
 declare const awsClient: import("@aws-sdk/client-secrets-manager").SecretsManager
+declare const gcpClient: import("@google-cloud/secret-manager").SecretManagerServiceClient
 
 const awsOptions: AwsOptions = { client: awsClient }
 void aws(awsOptions)
+const gcpOptions: GcpOptions = { client: gcpClient }
+void gcp(gcpOptions)
 
 const secrets = createSecretsKit({
   secrets: {

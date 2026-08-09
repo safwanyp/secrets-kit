@@ -26,6 +26,19 @@ export type AwsOptions =
 
 export function aws(options?: AwsOptions): ProviderDescriptor
 
+export type GcpSecretManagerClient = Pick<
+  import("@google-cloud/secret-manager").SecretManagerServiceClient,
+  "accessSecretVersion" | "apiEndpoint" | "getProjectId"
+>
+
+export interface GcpOptions {
+  readonly client?: GcpSecretManagerClient
+  readonly location?: string
+  readonly projectId?: string
+}
+
+export function gcp(options?: GcpOptions): ProviderDescriptor
+
 export interface SourceDefinition {
   readonly id: string
   readonly provider: ProviderDescriptor

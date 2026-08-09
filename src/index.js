@@ -1,5 +1,6 @@
 export { createSecretsKit } from "./client.js"
 export { aws } from "./providers/aws.js"
+export { gcp } from "./providers/gcp.js"
 
 export {
   SecretAccessDeniedError,
