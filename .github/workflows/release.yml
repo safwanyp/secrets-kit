@@ -1,0 +1,105 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  release-please:
+    name: Prepare release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    outputs:
+      release-created: ${{ steps.release.outputs.release_created }}
+      tag-name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - name: Run Release Please
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  publish:
+    name: Verify live providers and publish
+    if: needs.release-please.outputs.release-created == 'true'
+    needs: release-please
+    runs-on: ubuntu-latest
+    environment:
+      name: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out release tag
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.release-please.outputs.tag-name }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node.js and npm registry
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24.16.0"
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run release-quality checks
+        run: pnpm run check
+
+      - name: Authenticate to AWS with GitHub OIDC
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-region: ${{ vars.SECRETS_KIT_AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+
+      - name: Authenticate to Google Cloud with workload identity
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - name: Verify AWS live read
+        env:
+          SECRETS_KIT_LIVE_AWS: "1"
+          SECRETS_KIT_AWS_EXPECTED_VALUE: ${{ secrets.SECRETS_KIT_AWS_EXPECTED_VALUE }}
+          SECRETS_KIT_AWS_REGION: ${{ vars.SECRETS_KIT_AWS_REGION }}
+          SECRETS_KIT_AWS_SECRET_ID: ${{ vars.SECRETS_KIT_AWS_SECRET_ID }}
+        run: pnpm run test:live:aws
+
+      - name: Verify Google Cloud live read
+        env:
+          SECRETS_KIT_LIVE_GCP: "1"
+          SECRETS_KIT_GCP_EXPECTED_VALUE: ${{ secrets.SECRETS_KIT_GCP_EXPECTED_VALUE }}
+          SECRETS_KIT_GCP_LOCATION: ${{ vars.SECRETS_KIT_GCP_LOCATION }}
+          SECRETS_KIT_GCP_PROJECT_ID: ${{ vars.SECRETS_KIT_GCP_PROJECT_ID }}
+          SECRETS_KIT_GCP_SECRET_ID: ${{ vars.SECRETS_KIT_GCP_SECRET_ID }}
+        run: pnpm run test:live:gcp
+
+      - name: Verify Infisical live read
+        env:
+          INFISICAL_CLIENT_ID: ${{ secrets.INFISICAL_CLIENT_ID }}
+          INFISICAL_CLIENT_SECRET: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+          SECRETS_KIT_INFISICAL_ENVIRONMENT: ${{ vars.SECRETS_KIT_INFISICAL_ENVIRONMENT }}
+          SECRETS_KIT_INFISICAL_EXPECTED_VALUE: ${{ secrets.SECRETS_KIT_INFISICAL_EXPECTED_VALUE }}
+          SECRETS_KIT_INFISICAL_PROJECT_ID: ${{ vars.SECRETS_KIT_INFISICAL_PROJECT_ID }}
+          SECRETS_KIT_INFISICAL_SECRET_NAME: ${{ vars.SECRETS_KIT_INFISICAL_SECRET_NAME }}
+          SECRETS_KIT_INFISICAL_SECRET_PATH: ${{ vars.SECRETS_KIT_INFISICAL_SECRET_PATH }}
+          SECRETS_KIT_INFISICAL_SITE_URL: ${{ vars.SECRETS_KIT_INFISICAL_SITE_URL }}
+          SECRETS_KIT_LIVE_INFISICAL: "1"
+        run: pnpm run test:live:infisical
+
+      - name: Publish with npm Trusted Publishing
+        run: pnpm run publish:release

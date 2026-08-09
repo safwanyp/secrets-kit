@@ -129,3 +129,5 @@ docs: clarify injected client ownership
 ```
 
 Pull-request titles and commits must satisfy Commitlint. Avoid unrelated formatting or generated-file churn.
+
+Maintainers should follow [docs/releasing.md](./docs/releasing.md). Release Please owns versions, tags, and changelogs; the protected release workflow owns live-provider verification and npm publication.

@@ -50,6 +50,7 @@
     "generate:check": "node ./scripts/check-generated.js",
     "test:package": "node ./scripts/test-package.js",
     "publint": "publint --strict",
+    "publish:release": "npm publish",
     "commitlint": "commitlint --config ./commitlint.config.js",
     "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:coverage && pnpm run generate:check && pnpm run test:package && pnpm run publint",
     "prepare": "husky"
