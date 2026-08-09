@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://secrets-kit.dev/schema/config.schema.json",
+  "title": "SecretsKitDataConfig",
+  "description": "The JSON-compatible structure of a Secrets Kit configuration.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sources", "secrets"],
+  "properties": {
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "title": "SourceDefinition",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "provider"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "[\\s\\S]"
+          },
+          "provider": {}
+        }
+      }
+    },
+    "secrets": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "[\\s\\S]"
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/SecretDefinition"
+      }
+    },
+    "cache": {
+      "$ref": "#/definitions/CachePolicy"
+    },
+    "onBackgroundError": {}
+  },
+  "definitions": {
+    "CachePolicy": {
+      "title": "CachePolicy",
+      "description": "An in-memory TTL cache policy.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ttlMs"],
+      "properties": {
+        "ttlMs": {
+          "description": "How long a successful value remains valid, in milliseconds.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "refreshAheadMs": {
+          "description": "How long before expiry a read may trigger a background refresh.",
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      }
+    },
+    "SecretDefinition": {
+      "title": "SecretDefinition",
+      "description": "A declared mapping from a logical name to one provider secret.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "sourceId"],
+      "properties": {
+        "source": {
+          "type": "string",
+          "pattern": "[\\s\\S]"
+        },
+        "sourceId": {
+          "type": "string",
+          "pattern": "[\\s\\S]"
+        },
+        "field": {
+          "type": "string"
+        },
+        "cache": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/CachePolicy"
+            },
+            {
+              "const": false
+            }
+          ]
+        }
+      }
+    }
+  }
+}

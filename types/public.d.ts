@@ -1,3 +1,5 @@
+export type { CachePolicy, SecretDefinition } from "./generated-config.js"
+
 export type SecretsKitErrorCode =
   | "SECRETS_KIT_ERROR"
   | "SECRETS_KIT_CONFIGURATION"

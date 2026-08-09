@@ -13,7 +13,7 @@
     "target": "ES2024"
   },
   "include": [
-    "generated/**/*.js",
+    "generated/**/*.d.ts",
     "scripts/**/*.js",
     "src/**/*.js",
     "test/**/*.js",

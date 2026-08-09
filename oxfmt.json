@@ -1,5 +1,9 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "ignorePatterns": ["docs/design.md"],
+  "ignorePatterns": [
+    "docs/design.md",
+    "generated/validate-config.js",
+    "types/generated-config.d.ts"
+  ],
   "semi": false
 }
