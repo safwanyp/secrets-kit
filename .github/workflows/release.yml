@@ -9,40 +9,36 @@ permissions:
   contents: read
 
 jobs:
-  release-please:
-    name: Prepare release
+  release:
+    name: Release and publish
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    environment:
+      name: npm
     permissions:
       contents: write
+      id-token: write
       issues: write
       pull-requests: write
-    outputs:
-      release-created: ${{ steps.release.outputs.release_created }}
-      tag-name: ${{ steps.release.outputs.tag_name }}
     steps:
-      - name: Run Release Please
+      - name: Create version tag and GitHub release
         id: release
         uses: googleapis/release-please-action@v4
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+          skip-github-pull-request: true
 
-  publish:
-    name: Verify live providers and publish
-    if: needs.release-please.outputs.release-created == 'true'
-    needs: release-please
-    runs-on: ubuntu-latest
-    environment:
-      name: npm
-    permissions:
-      contents: read
-      id-token: write
-    steps:
+      - name: Require a merged release PR
+        if: steps.release.outputs.release_created != 'true'
+        run: |
+          echo "::error::No merged Release Please PR is ready to release."
+          exit 1
+
       - name: Check out release tag
         uses: actions/checkout@v6
         with:
-          ref: ${{ needs.release-please.outputs.tag-name }}
+          ref: ${{ steps.release.outputs.tag_name }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6

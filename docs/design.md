@@ -536,14 +536,15 @@ Release Please is the permanent semantic-versioning mechanism:
 - `feat:` produces a minor.
 - `!` or `BREAKING CHANGE:` produces a major.
 - A reviewable release PR carries version and changelog updates.
-- Merging the release PR creates the version tag and GitHub release.
+- Merging the release PR never publishes it.
+- One manual release workflow run creates the version tag and GitHub release, verifies the release, and publishes it.
 
 npm publication always uses Trusted Publishing with GitHub Actions OIDC:
 
 - No long-lived npm publish token
 - Automatic npm provenance
-- Protected GitHub environment with manual approval
-- Release workflow triggered manually from `main`; pushes never create or publish a release
+- Protected GitHub environment scoped to releases from `main`
+- Release workflow triggered manually from `main`; pushes never create a tag, GitHub release, or npm publication
 - Publication only after required quality and live-provider checks
 - Traditional token publishing restricted after OIDC is verified
 
