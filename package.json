@@ -1,0 +1,69 @@
+{
+  "name": "secrets-kit",
+  "version": "0.0.0",
+  "description": "A small, read-only Node.js SDK for retrieving declared secrets from AWS, Google Cloud, and Infisical.",
+  "license": "MIT",
+  "files": [
+    "generated",
+    "src",
+    "types",
+    "LICENSE",
+    "README.md"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "types": "./types/public.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/public.d.ts",
+      "import": "./src/index.js",
+      "require": "./src/index.js"
+    }
+  },
+  "scripts": {
+    "format": "oxfmt --config ./oxfmt.json .",
+    "format:check": "oxfmt --config ./oxfmt.json --check .",
+    "lint": "oxlint --config ./oxlint.json .",
+    "typecheck": "tsc --project ./tsconfig.json",
+    "test": "vitest run --config ./vitest.config.js",
+    "test:watch": "vitest --config ./vitest.config.js",
+    "test:live:aws": "vitest run --config ./vitest.live.config.js ./test/live/aws.live.test.js",
+    "test:live:gcp": "vitest run --config ./vitest.live.config.js ./test/live/gcp.live.test.js",
+    "test:live:infisical": "vitest run --config ./vitest.live.config.js ./test/live/infisical.live.test.js",
+    "generate:validators": "node ./scripts/generate-validators.js",
+    "generate:types": "node ./scripts/generate-types.js",
+    "generate": "pnpm run generate:validators && pnpm run generate:types",
+    "generate:check": "node ./scripts/check-generated.js",
+    "test:package": "node ./scripts/test-package.js",
+    "commitlint": "commitlint --config ./commitlint.config.js",
+    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run generate:check && pnpm run test:package",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.1106.0",
+    "@google-cloud/secret-manager": "^6.3.0",
+    "@infisical/sdk": "^5.0.2",
+    "ajv": "^8.20.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
+    "@types/node": "^26.2.0",
+    "@vitest/coverage-v8": "^4.1.10",
+    "husky": "^9.1.7",
+    "json-schema-to-dts": "^2.0.1",
+    "oxfmt": "^0.62.0",
+    "oxlint": "^1.77.0",
+    "publint": "^0.3.23",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  },
+  "engines": {
+    "node": "^22.13.0 || ^24.0.0 || ^26.0.0"
+  },
+  "volta": {
+    "node": "24.16.0",
+    "pnpm": "11.5.2"
+  },
+  "packageManager": "pnpm@11.5.2"
+}
