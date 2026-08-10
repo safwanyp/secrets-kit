@@ -4,7 +4,8 @@
     "CHANGELOG.md",
     "docs/design.md",
     "generated/validate-config.js",
-    "types/generated-config.d.ts"
+    "types/generated-config.d.ts",
+    ".release-please-manifest.json"
   ],
   "semi": false
 }

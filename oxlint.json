@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "ignorePatterns": ["generated/validate-config.js"],
+  "ignorePatterns": ["generated/validate-config.js", ".release-please-manifest.json"],
   "categories": {
     "correctness": "error",
     "perf": "warn",
