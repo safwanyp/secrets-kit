@@ -1,6 +1,6 @@
 {
   "name": "secrets-kit",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A small, read-only Node.js SDK for retrieving declared secrets from AWS, Google Cloud, and Infisical.",
   "keywords": [
     "aws",
