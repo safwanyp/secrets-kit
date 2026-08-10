@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "ignorePatterns": [
+    "CHANGELOG.md",
     "docs/design.md",
     "generated/validate-config.js",
     "types/generated-config.d.ts"
