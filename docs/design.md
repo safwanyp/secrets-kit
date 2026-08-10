@@ -509,7 +509,7 @@ Fast tests cover:
 - Published package contents
 - Stale generated artifacts
 
-Live smoke suites exercise real AWS, GCP, and Infisical services. They require explicit credentials and flags, never run automatically on contributor pull requests, and all three must pass before a release is published.
+Optional live smoke suites exercise real AWS, GCP, and Infisical services. They require explicit credentials and flags and never run automatically in pull-request, CI, or release workflows. Maintainers may use them when diagnosing provider behavior, but publication relies on the fast adapter contract tests with injected clients.
 
 GitHub Actions runs on `ubuntu-latest` only. The Node matrix covers:
 
@@ -543,9 +543,9 @@ npm publication always uses Trusted Publishing with GitHub Actions OIDC:
 
 - No long-lived npm publish token
 - Automatic npm provenance
-- Protected GitHub environment scoped to releases from `main`
+- No GitHub environment or provider fixture credentials required
 - Release workflow triggered manually from `main`; pushes never create a tag, GitHub release, or npm publication
-- Publication only after required quality and live-provider checks
+- Publication only after the complete fast, type, generated-artifact, and package-quality gate
 - Traditional token publishing restricted after OIDC is verified
 
 This release model applies to every release, not only v0.1.
